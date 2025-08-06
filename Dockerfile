@@ -4,22 +4,27 @@ FROM python:3.11-slim
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Install psycopg2 build dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
     libpq-dev \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Set work directory
+# Set the working directory
 WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt .
+# Copy requirements file first to leverage Docker cache
+COPY requirements.txt /app/
+
+# Install Python dependencies
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy source
-COPY . .
+# Copy the rest of the application
+COPY . /app/
 
-# Start app
+# Expose port 8000
+EXPOSE 8000
+
+# Start the application with Gunicorn
 CMD ["gunicorn", "backend.wsgi:application", "--bind", "0.0.0.0:8000"]
