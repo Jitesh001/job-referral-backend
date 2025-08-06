@@ -5,7 +5,6 @@
 **/db.sqlite3
 .mypy_cache/
 **/local.docker-compose.yml
-**/*.txt
 *.env
 .python-version
 celerybeat-schedule
