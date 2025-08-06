@@ -243,7 +243,7 @@ REDIS_PORT = config("REDIS_PORT", cast=int, default=6379)
 REDIS_CACHE_STORE = config("REDIS_CACHE_STORE", cast=int, default=0)
 REDIS_CONN_STRING = config(
     "REDIS_CONN_STRING",
-    default=f"{REDIS_URL_SCHEME}://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{REDIS_CACHE_STORE}",
+    default=f"{REDIS_URL_SCHEME}://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CACHE_STORE}",
 )
 
 # Redis Cache backend
