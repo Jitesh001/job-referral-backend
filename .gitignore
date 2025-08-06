@@ -1,0 +1,12 @@
+
+**/__pycache__/
+**/*.pyc
+**/__init__.py
+**/db.sqlite3
+.mypy_cache/
+**/docker-compose.yml
+**/*.txt
+*.env
+.python-version
+celerybeat-schedule
+local.Dockerfile
