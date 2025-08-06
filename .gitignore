@@ -4,7 +4,7 @@
 **/__init__.py
 **/db.sqlite3
 .mypy_cache/
-**/docker-compose.yml
+**/local.docker-compose.yml
 **/*.txt
 *.env
 .python-version

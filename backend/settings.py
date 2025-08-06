@@ -280,6 +280,7 @@ CORS_ALLOWED_ORIGINS = config(
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "https://*.ngrok-free.app",
+    "https://job-referral-frontend-deployment.up.railway.app",
 ]
 
 CORS_ALLOW_HEADERS = [
