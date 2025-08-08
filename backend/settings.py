@@ -84,29 +84,12 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": config("POSTGRES_DB", default=None),
-#         "USER": config("POSTGRES_USER", default=None),
-#         "PASSWORD": config("POSTGRES_PASSWORD", default=None),
-#         "HOST": config("DB_HOST", default="localhost"),
-#         "PORT": config("DB_PORT", default=5432),
-#     }
-# }
+DATABASE_URL = f"postgresql://{config('POSTGRES_USER')}:{config('POSTGRES_PASSWORD')}@{config('DB_HOST', default='localhost')}:{config('DB_PORT', default='5432')}/{config('POSTGRES_DB')}"
 
-try:
-    DATABASES = {
-        "default": dj_database_url.config(
-            default=config("DATABASE_URL"), conn_max_age=600, ssl_require=True
-        )
-    }
-except UndefinedValueError:
-    raise Exception(
-        "🚨 DATABASE_URL is not set! Make sure it's defined in Railway environment variables."
-    )
+DATABASES = {
+    "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
