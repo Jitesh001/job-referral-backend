@@ -9,3 +9,5 @@
 .python-version
 celerybeat-schedule
 local.Dockerfile
+*.Dockerfile
+*.docker-compose.yml
