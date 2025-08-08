@@ -1,0 +1,5 @@
+{
+  "buildCommand": "docker build -t backend .",
+  "startCommand": "docker run -p 8000:8000 backend",
+  "releaseCommand": "docker run --rm backend python manage.py migrate"
+}
