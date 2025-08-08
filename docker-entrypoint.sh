@@ -2,6 +2,11 @@
 
 set -e  # Exit if any command fails
 
+echo "---- ENV DEBUG ----"
+echo "DATABASE_URL = $DATABASE_URL"
+echo "--------------------"
+
+
 echo "Running database migrations..."
 python manage.py migrate
 

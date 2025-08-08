@@ -14,8 +14,7 @@ import logging.config
 from datetime import timedelta
 from pathlib import Path
 import dj_database_url
-from decouple import Csv, config
-import os
+from decouple import Csv, config, UndefinedValueError
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -98,12 +97,16 @@ WSGI_APPLICATION = "backend.wsgi.application"
 #     }
 # }
 
-
-DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"), conn_max_age=600, ssl_require=True
+try:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=config("DATABASE_URL"), conn_max_age=600, ssl_require=True
+        )
+    }
+except UndefinedValueError:
+    raise Exception(
+        "🚨 DATABASE_URL is not set! Make sure it's defined in Railway environment variables."
     )
-}
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
