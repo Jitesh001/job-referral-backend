@@ -29,4 +29,4 @@ RUN chmod +x /app/docker-entrypoint.sh
 EXPOSE 8000
 
 # Use the entrypoint script to start the app (runs migrations, etc.)
-ENTRYPOINT ["/app/docker-entrypoint.sh"]
+ENTRYPOINT ["./docker-entrypoint.sh"]
