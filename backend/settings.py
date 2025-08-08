@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import logging.config
 from datetime import timedelta
 from pathlib import Path
-
+import dj_database_url
 from decouple import Csv, config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -86,16 +86,20 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("POSTGRES_DB", default=None),
-        "USER": config("POSTGRES_USER", default=None),
-        "PASSWORD": config("POSTGRES_PASSWORD", default=None),
-        "HOST": config("DB_HOST", default="localhost"),
-        "PORT": config("DB_PORT", default=5432),
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": config("POSTGRES_DB", default=None),
+#         "USER": config("POSTGRES_USER", default=None),
+#         "PASSWORD": config("POSTGRES_PASSWORD", default=None),
+#         "HOST": config("DB_HOST", default="localhost"),
+#         "PORT": config("DB_PORT", default=5432),
+#     }
+# }
+
+
+DATABASES = {"default": dj_database_url.config(conn_max_age=600, ssl_require=True)}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

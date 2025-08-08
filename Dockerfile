@@ -23,9 +23,10 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 # Copy the rest of the application
 COPY . /app/
+RUN chmod +x /app/docker-entrypoint.sh
 
 # Expose port 8000
 EXPOSE 8000
 
-# Start the application with Gunicorn
+# Use the entrypoint script to start the app (runs migrations, etc.)
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
