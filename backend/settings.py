@@ -84,11 +84,16 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 
-DATABASE_URL = f"postgresql://{config('POSTGRES_USER')}:{config('POSTGRES_PASSWORD')}@{config('DB_HOST', default='localhost')}:{config('DB_PORT', default='5432')}/{config('POSTGRES_DB')}"
-
-DATABASES = {
-    "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
-}
+ENVIRONMENT = config("ENVIRONMENT", default="development")
+if ENVIRONMENT == "production":
+    DATABASE_URL = config("DATABASE_URL", default=None)
+    DATABASES = {
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True,
+        )
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -229,15 +234,8 @@ SIMPLE_JWT = {
 FRONTEND_HOST_URL = config("FRONTEND_HOST_URL", default="http://localhost:5173")
 
 # Redis config
-REDIS_URL_SCHEME = config("REDIS_URL_SCHEME", default="redis")
-REDIS_HOST = config("REDIS_HOST", default="localhost")
-REDIS_PASSWORD = config("REDIS_PASSWORD", default="")
-REDIS_PORT = config("REDIS_PORT", cast=int, default=6379)
-REDIS_CACHE_STORE = config("REDIS_CACHE_STORE", cast=int, default=0)
-REDIS_CONN_STRING = config(
-    "REDIS_CONN_STRING",
-    default=f"{REDIS_URL_SCHEME}://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CACHE_STORE}",
-)
+REDIS_CONN_STRING = config("REDIS_CONN_STRING", default="redis://localhost:6379/0")
+REDIS_CACHE_STORE = config("REDIS_CACHE_STORE", default="0")
 
 # Redis Cache backend
 CACHES = {
