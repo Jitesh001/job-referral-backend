@@ -12,8 +12,28 @@ logger = logging.getLogger(__name__)
 
 @app.task(bind=True)
 def send_otp_email(_, user_uuid, otp):
-    User.objects.get(uuid=user_uuid)
-    logger.info(f"OTP: {otp}")
+    try:
+        User.objects.get(uuid=user_uuid)
+    except User.DoesNotExist:
+        logger.error(f"User with UUID {user_uuid} does not exist.")
+        return
+
+    subject = "Your OTP Code"
+    template = "emails/test_email.html"
+    msg_html = render_to_string(
+        template,
+        {
+            "sample_message": f"Your OTP code is: {otp}. Please use this code to verify your account.",
+        },
+    ).strip()
+
+    send_email(
+        subject=subject,
+        body=msg_html,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[settings.MAIL_TO],
+        alternatives=[(msg_html, "text/html")],
+    )
 
 
 @app.task(bind=True)

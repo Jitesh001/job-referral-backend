@@ -1,28 +1,19 @@
 FROM python:3.11-slim
 
-# Environment setup
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    libpq-dev \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc libpq-dev curl \
+ && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
 WORKDIR /app
+COPY requirements.txt .
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-# Install Python dependencies
-COPY requirements.txt /app/
-RUN pip install --upgrade pip && pip install -r requirements.txt
-
-# Copy all project files into the image
-COPY . /app/
-
-# Make entrypoint executable
+COPY . .
 RUN chmod +x /app/docker-entrypoint.sh
 
-# Set default command
-CMD ["bash", "/app/docker-entrypoint.sh"]
+# Let Railway override PORT; we’ll bind to ${PORT}
+EXPOSE 8000
+ENTRYPOINT ["/app/docker-entrypoint.sh"]

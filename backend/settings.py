@@ -14,7 +14,7 @@ import logging.config
 from datetime import timedelta
 from pathlib import Path
 import dj_database_url
-from decouple import Csv, config, UndefinedValueError
+from decouple import Csv, config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -148,6 +148,7 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default=EMAIL_HOST_USER)
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 EMAIL_SUBJECT_PREFIX = config("EMAIL_SUBJECT_PREFIX", default=" ")
+MAIL_TO = config("MAIL_TO", default="jiteshshewale40@gmail.com")
 
 LOGGING_CONFIG = None
 LOGGING = {
@@ -272,7 +273,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "https://*.ngrok-free.app",
     "https://job-referral-backend-deployment.up.railway.app",
-    "https://job-referral-frontend-deployment.up.railway.app",
+    "https://job-referral.up.railway.app",
 ]
 
 CORS_ALLOW_HEADERS = [
