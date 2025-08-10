@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import List
 
 import pyotp
@@ -45,7 +45,7 @@ class User(AbstractUser, AbstractTrack):
             self.save()
 
         totp = pyotp.TOTP(self.otp_secret, interval=60)
-        self.otp_created_at = datetime.now()
+        self.otp_created_at = timezone.now()
         self.save()
         return totp.now()
 
