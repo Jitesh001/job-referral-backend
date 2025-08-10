@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import logging.config
 from datetime import timedelta
 from pathlib import Path
-
+import dj_database_url
 from decouple import Csv, config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -55,6 +55,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -63,6 +64,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 ROOT_URLCONF = "backend.urls"
 
@@ -84,18 +86,16 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("POSTGRES_DB", default=None),
-        "USER": config("POSTGRES_USER", default=None),
-        "PASSWORD": config("POSTGRES_PASSWORD", default=None),
-        "HOST": config("DB_HOST", default="localhost"),
-        "PORT": config("DB_PORT", default=5432),
+ENVIRONMENT = config("ENVIRONMENT", default="development")
+if ENVIRONMENT == "production":
+    DATABASE_URL = config("DATABASE_URL", default=None)
+    DATABASES = {
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True,
+        )
     }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -132,7 +132,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -150,6 +151,7 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default=EMAIL_HOST_USER)
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 EMAIL_SUBJECT_PREFIX = config("EMAIL_SUBJECT_PREFIX", default=" ")
+MAIL_TO = config("MAIL_TO", default="jiteshshewale40@gmail.com")
 
 LOGGING_CONFIG = None
 LOGGING = {
@@ -236,15 +238,8 @@ SIMPLE_JWT = {
 FRONTEND_HOST_URL = config("FRONTEND_HOST_URL", default="http://localhost:5173")
 
 # Redis config
-REDIS_URL_SCHEME = config("REDIS_URL_SCHEME", default="redis")
-REDIS_HOST = config("REDIS_HOST", default="localhost")
-REDIS_PASSWORD = config("REDIS_PASSWORD", default="")
-REDIS_PORT = config("REDIS_PORT", cast=int, default=6379)
-REDIS_CACHE_STORE = config("REDIS_CACHE_STORE", cast=int, default=0)
-REDIS_CONN_STRING = config(
-    "REDIS_CONN_STRING",
-    default=f"{REDIS_URL_SCHEME}://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CACHE_STORE}",
-)
+REDIS_CONN_STRING = config("REDIS_CONN_STRING", default="redis://localhost:6379/0")
+REDIS_CACHE_STORE = config("REDIS_CACHE_STORE", default="0")
 
 # Redis Cache backend
 CACHES = {
@@ -280,7 +275,8 @@ CORS_ALLOWED_ORIGINS = config(
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "https://*.ngrok-free.app",
-    "https://job-referral-frontend-deployment.up.railway.app",
+    "https://job-referral-backend.up.railway.app",
+    "https://job-referral.up.railway.app",
 ]
 
 CORS_ALLOW_HEADERS = [

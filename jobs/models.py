@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import List
 
 import pyotp
@@ -45,21 +45,15 @@ class User(AbstractUser, AbstractTrack):
             self.save()
 
         totp = pyotp.TOTP(self.otp_secret, interval=60)
-        self.otp_created_at = datetime.now()
+        self.otp_created_at = timezone.now()
         self.save()
         return totp.now()
 
     def verify_otp(self, otp):
-        """Verify the provided OTP"""
-        if not self.otp_secret or not self.otp_created_at:
+        if not self.otp_secret:
             return False
-
-        # Check if OTP is expired (1 minutes)
-        if timezone.now() > self.otp_created_at + timedelta(minutes=1):
-            return False
-
-        totp = pyotp.TOTP(self.otp_secret, interval=60)  # 1-minutes interval
-        return totp.verify(otp)
+        totp = pyotp.TOTP(self.otp_secret, interval=60)
+        return totp.verify(otp, valid_window=1)
 
 
 class JobPost(AbstractTrack):
