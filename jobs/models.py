@@ -102,4 +102,4 @@ class JobPost(AbstractTrack):
     job_description = models.TextField()
 
     def __str__(self):
-        return f"{self.title} at {self.company_name}"
+        return f"{self.job_title} at {self.company_name}"
